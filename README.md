@@ -15,3 +15,11 @@ the issue of someone owing someone else money can arise. With one or both people
 about it, it can take a while before this is ever paid back. An application such as this could 
 record these amounts so that the information regarding what is owed is easily accessible. 
 
+### User Stories:  
+
+- As a user, I want to be able to add names to the ledger  
+- As a user, I want to be able to pay off someone (who I owe) an amount of money  
+- As a user, I want to be able to set an amount of money owed to me by another person  
+- As a user, I want to be able to see a summary of what is owed by which people  
+- As a user, I want to be able to balance out the amounts owed  
+(e.g. if P1 owes P2 $10, and P2 owes P1 $3, then P1 owes P2 $7)
