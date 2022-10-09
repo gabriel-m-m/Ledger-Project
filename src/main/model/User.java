@@ -21,6 +21,19 @@ public class User {
         }
     }
 
+    // REQUIRES : string contained in original list of names
+    // EFFECTS : returns Entry with name
+    public Entry findEntry(String name) {
+        Entry entry = null;
+        for (Entry e: entries) {
+            if (name.equals(e.getName())) {
+                entry = e;
+                break;
+            }
+        }
+        return entry;
+    }
+
     public ArrayList<Entry> getEntries() {
         return this.entries;
     }

@@ -7,7 +7,7 @@ public class Entry {
     private int debt;
 
     // REQUIRES : non-empty string
-    // EFFECTS : Constructs entry with name, and owed and debt = 0
+    // EFFECTS : Constructs entry with name, and owed and debt = 0 (cents)
     public Entry(String name) {
         this.name = name;
         this.owed = 0;
@@ -17,30 +17,43 @@ public class Entry {
     // REQUIRES : amount > 0
     // MODIFIES : this
     // EFFECTS : increases owed by amount
-    private void addOwed(int amount) {
+    public void addOwed(int amount) {
         this.owed += amount;
     }
 
     // REQUIRES : owed >= amount > 0
     // MODIFIES : this
     // EFFECTS : decreases owed by amount
-    private void subtractOwed(int amount) {
+    public void subtractOwed(int amount) {
         this.owed -= amount;
     }
 
     // REQUIRES : amount > 0
     // MODIFIES : this
     // EFFECTS : increases debt by amount
-    private void addDebt(int amount) {
-        this.owed += amount;
+    public void addDebt(int amount) {
+        this.debt += amount;
     }
 
     // REQUIRES : debt >= amount > 0
     // MODIFIES : this
     // EFFECTS : decreases debt by amount
-    private void subtractDebt(int amount) {
-        this.owed -= amount;
+    public void subtractDebt(int amount) {
+        this.debt -= amount;
     }
+
+    // MODIFIES : this
+    // EFFECTS : balances out debt and owed values
+    public void balanceVal() {
+        if (owed >= debt) {
+            this.owed -= debt;
+            this.debt = 0;
+        } else {
+            this.debt -= owed;
+            this.owed = 0;
+        }
+    }
+
 
     public int getDebt() {
         return this.debt;
@@ -52,5 +65,13 @@ public class Entry {
 
     public String getName() {
         return this.name;
+    }
+
+    public void setOwed(int amount) {
+        this.owed = amount;
+    }
+
+    public void setDebt(int amount) {
+        this.debt = amount;
     }
 }
