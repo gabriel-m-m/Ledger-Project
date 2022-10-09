@@ -41,4 +41,9 @@ public class User {
     public String getName() {
         return this.name;
     }
+
+    public void setEntries(ArrayList<Entry> e) {
+        this.entries = e;
+    }
+
 }

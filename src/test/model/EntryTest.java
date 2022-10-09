@@ -7,11 +7,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntryTest {
     private Entry entry;
+    private Entry entry1;
 
     @BeforeEach
     public void setUp() {
         entry = new Entry("Test 1");
     }
+
 
     @Test
     public void testConstructor() {
@@ -27,9 +29,25 @@ public class EntryTest {
     }
 
     @Test
+    public void testAddDebtMultiple() {
+        entry.addDebt(10);
+        assertEquals(10, entry.getDebt());
+        entry.addDebt(15);
+        assertEquals(25, entry.getDebt());
+    }
+
+    @Test
     public void testAddOwed() {
         entry.addOwed(15);
         assertEquals(15, entry.getOwed());
+    }
+
+    @Test
+    public void testAddOwedMultiple() {
+        entry.addOwed(15);
+        assertEquals(15, entry.getOwed());
+        entry.addOwed(25);
+        assertEquals(40, entry.getOwed());
     }
 
     @Test
@@ -49,6 +67,15 @@ public class EntryTest {
     }
 
     @Test
+    public void testSubtractDebtMultiple() {
+        entry.setDebt(400);
+        entry.subtractDebt(30);
+        assertEquals(370, entry.getDebt());
+        entry.subtractDebt(350);
+        assertEquals(20, entry.getDebt());
+    }
+
+    @Test
     public void testSubtractOwed() {
         entry.setOwed(400);
         entry.subtractOwed(400);
@@ -60,6 +87,15 @@ public class EntryTest {
         entry.setOwed(300);
         entry.subtractOwed(250);
         assertEquals(50, entry.getOwed());
+    }
+
+    @Test
+    public void testSubtractOwedMultiple() {
+        entry.setOwed(340);
+        entry.subtractOwed(250);
+        assertEquals(90, entry.getOwed());
+        entry.subtractOwed(1);
+        assertEquals(89, entry.getOwed());
     }
 
     @Test
