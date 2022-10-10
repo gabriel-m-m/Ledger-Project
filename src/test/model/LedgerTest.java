@@ -231,7 +231,25 @@ class LedgerTest {
         assertTrue(isEqualLedger(users, ledger));
     }
 
+    @Test
+    public void testFindUser() {
+        ArrayList<User> expected = new ArrayList<>();
+        expected.add(u1);
+        ArrayList<User> actual = new ArrayList<>();
+        actual.add(ledger.findUser("User 1"));
+        ledger.setUsers(actual);
+        assertTrue(isEqualLedger(expected, ledger));
+    }
 
+    @Test
+    public void testFindUserOther() {
+        ArrayList<User> expected = new ArrayList<>();
+        expected.add(u3);
+        ArrayList<User> actual = new ArrayList<>();
+        actual.add(ledger.findUser("User 3"));
+        ledger.setUsers(actual);
+        assertTrue(isEqualLedger(expected, ledger));
+    }
 
 
 

@@ -54,6 +54,19 @@ public class Ledger {
         }
     }
 
+    // REQUIRES : string contained in original list of names
+    // EFFECTS : returns User with name
+    public User findUser(String name) {
+        User user = null;
+        for (User u: users) {
+            if (name.equals(u.getName())) {
+                user = u;
+                break;
+            }
+        }
+        return user;
+    }
+
 
     // MODIFIES : this
     // EFFECTS : Balances values between users
@@ -67,5 +80,9 @@ public class Ledger {
 
     public ArrayList<User> getUsers() {
         return this.users;
+    }
+
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
     }
 }

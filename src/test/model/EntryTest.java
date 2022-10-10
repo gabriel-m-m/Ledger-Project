@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntryTest {
     private Entry entry;
-    private Entry entry1;
 
     @BeforeEach
     public void setUp() {
