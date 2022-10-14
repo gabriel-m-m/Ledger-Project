@@ -42,40 +42,26 @@ public class LedgerApp {
 
     // EFFECTS : Process user input
     private void processCommand(String command) {
-        while (true) {
-            if (command.equals("v")) {
-                ledgerSummary();
-                break;
-            } else if (command.equals("o")) {
-                doDebtIncrease();
-                break;
-            } else if (command.equals("p")) {
-                makePayment();
-                break;
-            } else if (command.equals("b")) {
-                balanceTellerApp();
-                break;
-            } else {
-                System.out.println("Please enter a valid command");
-            }
+        if (command.equals("v")) {
+            ledgerSummary();
+        } else if (command.equals("o")) {
+            doDebtIncrease();
+        } else if (command.equals("p")) {
+            makePayment();
+        } else if (command.equals("b")) {
+            balanceTellerApp();
+        } else {
+            System.out.println("Please enter a valid command");
         }
     }
 
+    // REQUIRES : a non-empty string
     // MODIFIES : this
-    // EFFECTS : takes user input to create a list of names for ledger
-    private void makeNameList() {
+    // EFFECTS : get a valid name from user input that isn't contained in originalNames
+    //           uses string for printed message
+    private void addValidName(String message) {
         while (true) {
-            System.out.println("Please enter a username for your ledger");
-            command = input.next();
-            if (command.equals("")) {
-                System.out.println("Please enter a valid name");
-            } else {
-                originalNames.add(command);
-                break;
-            }
-        }
-        while (true) {
-            System.out.println("Please enter a another unique username for your ledger");
+            System.out.println(message);
             command = input.next();
             if (command.equals("") || originalNames.contains(command)) {
                 System.out.println("Invalid name");
@@ -84,21 +70,18 @@ public class LedgerApp {
                 break;
             }
         }
+    }
+
+    // MODIFIES : this
+    // EFFECTS : takes user input to create a list of names for ledger
+    private void makeNameList() {
+        addValidName("Please enter a username for your ledger");
+        addValidName("Please enter a another unique username for your ledger");
         while (true) {
             System.out.println("Would you like to add more users ('yes'/'no')");
             command = input.next();
-            command.toLowerCase();
             if (command.equals("yes")) {
-                while (true) {
-                    System.out.println("Please enter a another unique username for your ledger");
-                    command = input.next();
-                    if (command.equals("") || originalNames.contains(command)) {
-                        System.out.println("Please enter a valid name");
-                    } else {
-                        originalNames.add(command);
-                        break;
-                    }
-                }
+                addValidName("Please enter a another unique username for your ledger");
             } else if (command.equals("no")) {
                 break;
             } else {
@@ -110,10 +93,10 @@ public class LedgerApp {
     // MODIFIES : this
     // EFFECTS : Makes a payment between users
     private void makePayment() {
-        ArrayList<String> bothUsers = getTwoNames();
+        ArrayList<String> bothUsers = getTwoNames("are you paying", "pay");
         String payer = bothUsers.get(0);
         String recipient = bothUsers.get(1);
-        System.out.println("How much is user paying (int > 0)");
+        System.out.println("How much is user paying?");
         while (true) {
             int amount;
             int max = ledger.findUser(payer).findEntry(recipient).getDebt();
@@ -132,7 +115,7 @@ public class LedgerApp {
     // MODIFIES : this
     // EFFECTS : Performs an increase in debt between users
     private void doDebtIncrease() {
-        ArrayList<String> bothUsers = getTwoNames();
+        ArrayList<String> bothUsers = getTwoNames("do you owe", "owe");
         String payer = bothUsers.get(0);
         String recipient = bothUsers.get(1);
         System.out.println("How much does user owe?");
@@ -148,10 +131,12 @@ public class LedgerApp {
         }
     }
 
-    // EFFECTS : Gets two string to be used for operations
-    private ArrayList<String> getTwoNames() {
-        System.out.println("What is your user name");
-        System.out.println(originalNames);
+    // REQUIRES : non-empty string action and message
+    // MODIFIES : this
+    // EFFECTS : Gets two names in originalNames to be used for operations
+    //           Uses both string inputs for printed messages
+    private ArrayList<String> getTwoNames(String message, String action) {
+        System.out.println("What is your user name\n" + originalNames);
         ArrayList<String> bothUsers = new ArrayList<>();
         while (true) {
             command = input.next();
@@ -162,12 +147,11 @@ public class LedgerApp {
                 System.out.println("Invalid username");
             }
         }
-        System.out.println("Which user are you paying (cannot be yourself)");
-        System.out.println(originalNames);
+        System.out.println("Which user " + message + " (cannot be yourself)\n" + originalNames);
         while (true) {
             command = input.next();
             if (command.equals(bothUsers.get(0))) {
-                System.out.println("You can't pay yourself!");
+                System.out.println("You can't " + action + " yourself!");
             } else if (originalNames.contains(command)) {
                 bothUsers.add(command);
                 return bothUsers;
@@ -180,6 +164,7 @@ public class LedgerApp {
     // EFFECTS : Balances values in ledger
     private void balanceTellerApp() {
         ledger.balanceLedger();
+        System.out.println("Values have been balanced!");
     }
 
     // EFFECTS : Prints a summary of the information in the ledger
