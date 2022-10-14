@@ -248,8 +248,8 @@ class LedgerTest {
         assertTrue(isEqualLedger(expected, ledger));
     }
 
-
-
-
-
+    @Test
+    public void testFindUserNull() {
+        assertEquals(null, ledger.findUser("User 0"));
+    }
 }

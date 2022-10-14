@@ -4,7 +4,6 @@ import model.Ledger;
 import model.User;
 import model.Entry;
 
-
 import java.util.ArrayList;
 import java.util.Scanner;
 

@@ -16,7 +16,7 @@ public class Ledger {
         }
     }
 
-    // REQUIRES : amount <= amount owed by name to owed
+    // REQUIRES : 0 < amount <= amount owed by name to owed
     //            string contained in list of names
     // MODIFIES : this
     // EFFECTS : Decreases number owed to owed by name by amount
@@ -24,13 +24,11 @@ public class Ledger {
         for (User user: this.users) {
             if (name.equals(user.getName())) {
                 user.findEntry(owed).subtractDebt(amount);
-                break;
             }
         }
         for (User user: this.users) {
             if (owed.equals(user.getName())) {
                 user.findEntry(name).subtractOwed(amount);
-                break;
             }
         }
 
@@ -43,13 +41,11 @@ public class Ledger {
         for (User user: this.users) {
             if (name.equals(user.getName())) {
                 user.findEntry(owed).addDebt(amount);
-                break;
             }
         }
         for (User user: this.users) {
             if (owed.equals(user.getName())) {
                 user.findEntry(name).addOwed(amount);
-                break;
             }
         }
     }

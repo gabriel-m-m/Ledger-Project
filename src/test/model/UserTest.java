@@ -50,6 +50,8 @@ public class UserTest {
         Entry finde1 = user.findEntry("Tester 1");
         Entry finde2 = user.findEntry("Tester 2");
         Entry finde3 = user.findEntry("Tester 3");
+        Entry nulle = user.findEntry("Not in List");
+        assertEquals(null, nulle);
         assertEquals(e1.getName(), finde1.getName());
         assertEquals(e1.getDebt(), finde1.getDebt());
         assertEquals(e1.getOwed(), finde1.getOwed());
