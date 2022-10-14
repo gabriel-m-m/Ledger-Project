@@ -28,6 +28,7 @@ public class LedgerApp {
         input = new Scanner(System.in);
         makeNameList();
         ledger = new Ledger(originalNames);
+        System.out.println("Ledger has been created!");
         while (true) {
             displayOptions();
             command = input.next();
@@ -92,10 +93,15 @@ public class LedgerApp {
 
     // MODIFIES : this
     // EFFECTS : Makes a payment between users
+    //           Quit (fails) if user doesn't owe any money
     private void makePayment() {
-        ArrayList<String> bothUsers = getTwoNames("are you paying", "pay");
+        ArrayList<String> bothUsers = getTwoDifferentNames("are you paying", "pay");
         String payer = bothUsers.get(0);
         String recipient = bothUsers.get(1);
+        if (ledger.findUser(recipient).findEntry(payer).getOwed() == 0) {
+            System.out.println("User doesn't owe any money\n");
+            return;
+        }
         System.out.println("How much is user paying?");
         while (true) {
             int amount;
@@ -115,7 +121,7 @@ public class LedgerApp {
     // MODIFIES : this
     // EFFECTS : Performs an increase in debt between users
     private void doDebtIncrease() {
-        ArrayList<String> bothUsers = getTwoNames("do you owe", "owe");
+        ArrayList<String> bothUsers = getTwoDifferentNames("do you owe", "owe");
         String payer = bothUsers.get(0);
         String recipient = bothUsers.get(1);
         System.out.println("How much does user owe?");
@@ -135,7 +141,7 @@ public class LedgerApp {
     // MODIFIES : this
     // EFFECTS : Gets two names in originalNames to be used for operations
     //           Uses both string inputs for printed messages
-    private ArrayList<String> getTwoNames(String message, String action) {
+    private ArrayList<String> getTwoDifferentNames(String message, String action) {
         System.out.println("What is your user name\n" + originalNames);
         ArrayList<String> bothUsers = new ArrayList<>();
         while (true) {
@@ -161,6 +167,7 @@ public class LedgerApp {
         }
     }
 
+    // MODIFIES : this
     // EFFECTS : Balances values in ledger
     private void balanceTellerApp() {
         ledger.balanceLedger();
