@@ -102,17 +102,29 @@ public class LedgerApp {
             return;
         }
         System.out.println("How much is user paying?");
+        int max = ledger.findUser(payer).findEntry(recipient).getDebt();
+        int amount = getValidPaymentNumber(max);
+        ledger.payDebts(payer, recipient, amount);
+    }
+
+    // REQUIRES : max > 0
+    // MODIFIES : this
+    // EFFECTS : gets valid number to be used in a payment transaction
+    //           0 < amount <= max
+    private int getValidPaymentNumber(int max) {
         while (true) {
-            int amount;
-            int max = ledger.findUser(payer).findEntry(recipient).getDebt();
-            amount = Integer.parseInt(input.next());
-            if (amount > max) {
-                System.out.println("User doesn't owe this much");
-            } else if (amount > 0) {
-                ledger.payDebts(payer, recipient, amount);
-                break;
+            if (input.hasNextInt()) {
+                int amount = input.nextInt();
+                if (amount > max) {
+                    System.out.println("User doesn't owe this much");
+                } else if (amount > 0) {
+                    return amount;
+                } else {
+                    System.out.println("Please enter a valid number");
+                }
             } else {
-                System.out.println("Please enter a valid number");
+                System.out.println("Please enter a number");
+                input.next();
             }
         }
     }
@@ -125,13 +137,18 @@ public class LedgerApp {
         String recipient = bothUsers.get(1);
         System.out.println("How much does user owe?");
         while (true) {
-            int amount;
-            amount = Integer.parseInt(input.next());
-            if (amount > 0) {
-                ledger.increaseOwed(payer, recipient, amount);
-                break;
+            if (input.hasNextInt()) {
+                int amount;
+                amount = input.nextInt();
+                if (amount > 0) {
+                    ledger.increaseOwed(payer, recipient, amount);
+                    break;
+                } else {
+                    System.out.println("Please enter a valid number");
+                }
             } else {
-                System.out.println("Please enter a valid number");
+                System.out.println("Please enter a number");
+                input.next();
             }
         }
     }
