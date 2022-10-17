@@ -23,3 +23,5 @@ record these amounts so that the information regarding what is owed is easily ac
 - As a user, I want to be able to see a summary of what is owed by which people  
 - As a user, I want to be able to balance out the amounts owed  
 (e.g. if P1 owes P2 $10, and P2 owes P1 $3, then P1 owes P2 $7)
+- As a user, I want to be able to save my ledger to file
+- As a user, I want to be able to load my ledger from file
