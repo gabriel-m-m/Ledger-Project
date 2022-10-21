@@ -85,7 +85,7 @@ public class JsonReaderTest extends LedgerTestHelper {
     }
 
     @Test
-    void testReaderFilledWorkRoom() {
+    void testReaderFilledLedger() {
         JsonReader reader = new JsonReader("./data/testReaderFilledLedger.json");
         try {
             Ledger ledger = reader.read();

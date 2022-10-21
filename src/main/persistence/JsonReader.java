@@ -24,7 +24,7 @@ public class JsonReader {
         this.source = source;
     }
 
-    // EFFECTS: reads workroom from file and returns it
+    // EFFECTS: reads ledger from file
     //          throws IOException if an error occurs when reading data from file
     public Ledger read() throws IOException {
         String jsonData = readFile(source);
