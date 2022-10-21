@@ -1,0 +1,47 @@
+{"users": [
+    {
+        "entries": [
+            {
+                "owed": 123123,
+                "name": "User 2",
+                "debt": 0
+            },
+            {
+                "owed": 0,
+                "name": "User 3",
+                "debt": 99999
+            }
+        ],
+        "name": "User 1"
+    },
+    {
+        "entries": [
+            {
+                "owed": 0,
+                "name": "User 1",
+                "debt": 123123
+            },
+            {
+                "owed": 4820,
+                "name": "User 3",
+                "debt": 0
+            }
+        ],
+        "name": "User 2"
+    },
+    {
+        "entries": [
+            {
+                "owed": 99999,
+                "name": "User 1",
+                "debt": 0
+            },
+            {
+                "owed": 0,
+                "name": "User 2",
+                "debt": 4820
+            }
+        ],
+        "name": "User 3"
+    }
+]}

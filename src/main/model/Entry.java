@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 // Represents an entry for a user with owed and debt for other user with name
 public class Entry {
     private String name;
@@ -52,6 +55,15 @@ public class Entry {
             this.debt -= owed;
             this.owed = 0;
         }
+    }
+
+    // EFFECTS : Returns entry as a JSON object
+    public JSONObject entryToJson() {
+        JSONObject entryJson = new JSONObject();
+        entryJson.put("name", name);
+        entryJson.put("owed", owed);
+        entryJson.put("debt", debt);
+        return entryJson;
     }
 
 

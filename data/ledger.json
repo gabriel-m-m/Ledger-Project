@@ -1,0 +1,47 @@
+{"users": [
+    {
+        "entries": [
+            {
+                "owed": 0,
+                "name": "p2",
+                "debt": 890
+            },
+            {
+                "owed": 0,
+                "name": "p3",
+                "debt": 0
+            }
+        ],
+        "name": "p1"
+    },
+    {
+        "entries": [
+            {
+                "owed": 890,
+                "name": "p1",
+                "debt": 0
+            },
+            {
+                "owed": 67878,
+                "name": "p3",
+                "debt": 0
+            }
+        ],
+        "name": "p2"
+    },
+    {
+        "entries": [
+            {
+                "owed": 0,
+                "name": "p1",
+                "debt": 0
+            },
+            {
+                "owed": 0,
+                "name": "p2",
+                "debt": 67878
+            }
+        ],
+        "name": "p3"
+    }
+]}

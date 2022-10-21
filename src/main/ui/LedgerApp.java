@@ -3,12 +3,20 @@ package ui;
 import model.Ledger;
 import model.User;
 import model.Entry;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 // Ledger application
+// Code for loading/saving based off of JsonSerializationDemo example
 public class LedgerApp {
+    private static final String JSON_STORE_LOC = "./data/ledger.json";
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
     private Ledger ledger;
     private ArrayList<String> originalNames;
     private Scanner input;
@@ -17,17 +25,20 @@ public class LedgerApp {
 
     // EFFECTS : Runs the teller application
     public LedgerApp() {
+        jsonReader = new JsonReader(JSON_STORE_LOC);
+        jsonWriter = new JsonWriter(JSON_STORE_LOC);
+        originalNames = new ArrayList<>();
+        input = new Scanner(System.in);
         runLedger();
     }
 
     // MODIFIES : this
     // EFFECTS : process user inputs
     private void runLedger() {
-        originalNames = new ArrayList<>();
-        input = new Scanner(System.in);
-        makeNameList();
-        ledger = new Ledger(originalNames);
-        System.out.println("Ledger has been created!");
+        System.out.println("What would you like to do?");
+        System.out.println("'n' = create new ledger");
+        System.out.println("'l' = load ledger from file");
+        processInitialCommand();
         while (true) {
             displayOptions();
             command = input.next();
@@ -40,6 +51,24 @@ public class LedgerApp {
         System.out.println("Program quit");
     }
 
+    // EFFECTS : Processes initial user input
+    private void processInitialCommand() {
+        while (true) {
+            command = input.next();
+            if (command.equals("n")) {
+                makeNameList();
+                ledger = new Ledger(originalNames);
+                System.out.println("Ledger has been created!");
+                break;
+            } else if (command.equals("l")) {
+                loadLedger();
+                break;
+            } else {
+                System.out.println("Please enter valid command");
+            }
+        }
+    }
+
     // EFFECTS : Process user input
     private void processCommand(String command) {
         if (command.equals("v")) {
@@ -49,7 +78,11 @@ public class LedgerApp {
         } else if (command.equals("p")) {
             makePayment();
         } else if (command.equals("b")) {
-            balanceTellerApp();
+            balanceLedgerApp();
+        } else if (command.equals("l")) {
+            loadLedger();
+        } else if (command.equals("s")) {
+            saveLedger();
         } else {
             System.out.println("Please enter a valid command");
         }
@@ -185,7 +218,7 @@ public class LedgerApp {
 
     // MODIFIES : this
     // EFFECTS : Balances values in ledger
-    private void balanceTellerApp() {
+    private void balanceLedgerApp() {
         ledger.balanceLedger();
         System.out.println("Values have been balanced!");
     }
@@ -208,8 +241,44 @@ public class LedgerApp {
         System.out.println("'v' = View ledger summary");
         System.out.println("'o' = Owe another user money");
         System.out.println("'b' = Balance out values");
-        System.out.println("'p' = Pay another user\n" + "'q' = quit");
+        System.out.println("'p' = Pay another user");
+        System.out.println("'l' = Load ledger");
+        System.out.println("'s' = Save ledger\n" + "'q' = quit");
+    }
+
+
+    // EFFECTS : saves Ledger to file
+    private void saveLedger() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(ledger);
+            jsonWriter.close();
+            System.out.println("Saved ledger to " + JSON_STORE_LOC);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE_LOC);
+        }
+    }
+
+    // MODIFIES : this
+    // EFFECTS : loads Ledger from file
+    private void loadLedger() {
+        try {
+            ledger = jsonReader.read();
+            System.out.println("Loaded ledger from " + JSON_STORE_LOC);
+            getNames();
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE_LOC);
+        }
+    }
+
+    // MODIFIES : this
+    // EFFECTS : gets originalNames when loading in a ledger from file
+    private void getNames() {
+        for (User u : ledger.getUsers()) {
+            originalNames.add(u.getName());
+        }
     }
 }
+
 
 

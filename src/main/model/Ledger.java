@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 // Represents a ledger with users
@@ -72,6 +75,22 @@ public class Ledger {
                 e.balanceVal();
             }
         }
+    }
+
+    // EFFECTS : returns this as a JSON object
+    public JSONObject ledgerToJson() {
+        JSONObject jsonLedger = new JSONObject();
+        jsonLedger.put("users", usersToJson(users));
+        return jsonLedger;
+    }
+
+    // EFFECTS : returns users as a JSON array
+    public JSONArray usersToJson(ArrayList<User> users) {
+        JSONArray usersJson = new JSONArray();
+        for (User u : users) {
+            usersJson.put(u.userToJson());
+        }
+        return usersJson;
     }
 
     public ArrayList<User> getUsers() {

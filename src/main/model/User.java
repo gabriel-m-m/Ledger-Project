@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 // Represents a user in the ledger with name and entries
@@ -32,6 +35,23 @@ public class User {
             }
         }
         return entry;
+    }
+
+    // EFFECTS : returns user as a json object
+    public JSONObject userToJson() {
+        JSONObject userJson = new JSONObject();
+        userJson.put("name", this.name);
+        userJson.put("entries", entriesToJson());
+        return userJson;
+    }
+
+    // EFFECTS : returns entries as a JSON array
+    public JSONArray entriesToJson() {
+        JSONArray jsonEntries = new JSONArray();
+        for (Entry e: entries) {
+            jsonEntries.put(e.entryToJson());
+        }
+        return jsonEntries;
     }
 
     public ArrayList<Entry> getEntries() {
