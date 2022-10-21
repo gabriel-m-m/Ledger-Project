@@ -1,5 +1,9 @@
-package model;
+package persistence;
 
+import model.Entry;
+import model.Ledger;
+import model.LedgerTestHelper;
+import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.JsonReader;
