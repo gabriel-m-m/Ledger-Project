@@ -6,13 +6,14 @@ import org.json.JSONObject;
 
 import java.io.*;
 
-// Code taken from JsonSerializationDemo example
+// Code based on JsonSerializationDemo example
+// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 public class JsonWriter {
     private static final int TAB = 4;
     private PrintWriter writer;
     private String destination;
 
-    // EFFECTS: constructs writer to write to destination file
+    // EFFECTS: constructs writer to write to file
     public JsonWriter(String destination) {
         this.destination = destination;
     }

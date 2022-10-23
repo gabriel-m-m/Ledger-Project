@@ -14,7 +14,8 @@ import model.User;
 import org.json.*;
 
 
-// Code for read operations taken from JsonSerializationDemo example
+// Code for read operations based off of JsonSerializationDemo example
+// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 public class JsonReader {
     private String source;
     private ArrayList<String> initList = new ArrayList<>();

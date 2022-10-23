@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 // Test for exception and empty case based on JsonSerializationDemo example
+// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 public class JsonReaderTest extends LedgerTestHelper {
     private ArrayList<String> emptyNameList = new ArrayList<>();
     private ArrayList<User> emptyUserList = new ArrayList<>();
