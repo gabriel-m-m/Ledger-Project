@@ -1,15 +1,24 @@
 package ui;
 
+import model.Entry;
 import model.Ledger;
+import model.User;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 // Code based on ListDemo and ListDialog
@@ -19,30 +28,37 @@ public class LedgerUI extends JFrame  {
     private DefaultListModel listModel;
     static JFrame startUpFrame;
     static JFrame userAddFrame;
+    static JFrame mainFrame;
+    private JTextPane ledgerSummaryPane;
 
+    private static final String JSON_STORE_LOC = "./data/ledger.json";
     private static final String oweActionString = "Owe a user";
     private static final String payActionString = "Pay a user";
+    private static final String balanceActionString = "Balance ledger";
     private static final String loadActionString = "Load ledger";
     private static final String createActionString = "Create new ledger";
     private static final String saveActionString = "Save ledger";
     private JButton oweButton;
     private JButton payButton;
+    private JButton balanceButton;
     private JButton loadButton;
     private JButton saveButton;
     private JButton createButton;
     private JButton doneButton;
     private JTextField username;
-    private JTextField ledgerSummary;
 
     private ArrayList<String> originalNames;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
     private Ledger ledger;
 
     public LedgerUI() {
         // initialize stuff, exit on close things
         //use setVisible false to move to diff frames??
         originalNames = new ArrayList<>();
+        jsonReader = new JsonReader(JSON_STORE_LOC);
+        jsonWriter = new JsonWriter(JSON_STORE_LOC);
         startUpGUI();
-        // mainMenuGUI();
     }
 
     public void startUpGUI() {
@@ -85,7 +101,6 @@ public class LedgerUI extends JFrame  {
             listModel = new DefaultListModel();
             listModel.addElement("");
 
-            //Create the list and put it in a scroll pane.
             list = new JList(listModel);
             list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             list.setSelectedIndex(0);
@@ -101,14 +116,13 @@ public class LedgerUI extends JFrame  {
             doneButton = new JButton("Done");
             doneButton.setActionCommand("Done");
             doneButton.addActionListener(new DoneListener());
+            doneButton.setEnabled(false);
 
             username = new JTextField(10);
             username.addActionListener(addUserListener);
             username.getDocument().addDocumentListener(addUserListener);
-            String name = listModel.getElementAt(
-                    list.getSelectedIndex()).toString();
+            String name = listModel.getElementAt(list.getSelectedIndex()).toString();
 
-            //Create a panel that uses BoxLayout.
             JPanel buttonPane = new JPanel();
             buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
             buttonPane.add(doneButton);
@@ -118,7 +132,6 @@ public class LedgerUI extends JFrame  {
             buttonPane.add(username);
             buttonPane.add(addUser);
             buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
             add(listScrollPane, BorderLayout.CENTER);
             add(buttonPane, BorderLayout.PAGE_END);
             listModel.remove(0);
@@ -127,7 +140,74 @@ public class LedgerUI extends JFrame  {
 
     public void mainMenuGUI() {
         startUpFrame.setVisible(false);
+        mainFrame = new JFrame("Main Menu");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        oweButton = new JButton(oweActionString);
+        oweButton.setActionCommand(oweActionString);
+        oweButton.addActionListener(new OweListener());
+        payButton = new JButton(payActionString);
+        payButton.setActionCommand(payActionString);
+        payButton.addActionListener(new PayListener());
+        saveButton = new JButton(saveActionString);
+        saveButton.setActionCommand(saveActionString);
+        saveButton.addActionListener(new SaveListener());
+        balanceButton = new JButton(balanceActionString);
+        balanceButton.setActionCommand(balanceActionString);
+        balanceButton.addActionListener(new BalanceListener());
+        JPanel mainPane = new JPanel();
+        JPanel topButtonPane = new JPanel();
+        JPanel botButtonPane = new JPanel();
+        ledgerSummaryPane = new JTextPane();
+        ledgerSummaryPane.setText(ledgerSummary());
+        ledgerSummaryPane.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
+        ledgerSummaryPane.enableInputMethods(false);
+        ledgerSummaryPane.setEditable(false);
+        JComponent newContentPane = mainPane;
+        newContentPane.setOpaque(true); //content panes must be opaque
+        mainFrame.setContentPane(newContentPane);
+        botButtonPane.add(oweButton);
+        botButtonPane.add(balanceButton);
+        botButtonPane.add(payButton);
+        topButtonPane.add(saveButton);
+        topButtonPane.add(loadButton);
+        mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
+        mainPane.add(topButtonPane, BorderLayout.PAGE_START);
+        mainPane.add(ledgerSummaryPane, BorderLayout.CENTER);
+        mainPane.add(botButtonPane, BorderLayout.PAGE_END);
+        mainPane.setBorder(BorderFactory.createEmptyBorder(3, 15, 3, 15));
+        mainFrame.pack();
+        mainFrame.setVisible(true);
+        mainPane.setVisible(true);
     }
+
+    public void splashScreenUI() {
+        startUpFrame.setVisible(false);
+        JFrame splashFrame = new JFrame("Ledger created successfully! \n Press to continue");
+        splashFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        class SplashListener implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                splashFrame.setVisible(false);
+                mainMenuGUI();
+            }
+        }
+
+        JButton splashButton = new JButton(new ImageIcon("./src/main/ui/splashscreen.gif"));
+        splashButton.setActionCommand("Press to continue");
+        splashButton.addActionListener(new SplashListener());
+        splashButton.setBackground(new Color(255,255,255));
+        splashButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        splashButton.setVerticalTextPosition(SwingConstants.TOP);
+        splashButton.setText("Press anywhere to continue");
+        splashButton.setToolTipText("Press anywhere to continue");
+        splashFrame.add(splashButton, BorderLayout.CENTER);
+        splashFrame.setMinimumSize(new Dimension(300,300));
+        splashFrame.pack();
+        splashFrame.setVisible(true);
+    }
+
+
 
     class CreateListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -135,9 +215,49 @@ public class LedgerUI extends JFrame  {
         }
     }
 
+    class OweListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    class PayListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    private class BalanceListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            ledger.balanceLedger();
+            ledgerSummaryPane.setText(ledgerSummary());
+        }
+    }
+
+    private class SaveListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                jsonWriter.open();
+                jsonWriter.write(ledger);
+                jsonWriter.close();
+            } catch (FileNotFoundException fnfe) {
+                System.out.println("Unable to write to file: " + JSON_STORE_LOC);
+            }
+        }
+    }
+
+
     class LoadListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            mainMenuGUI();
+            try {
+                ledger = jsonReader.read();
+            } catch (IOException ex) {
+                System.out.println("Unable to read from " + JSON_STORE_LOC);
+            }
+            if (startUpFrame.isVisible()) {
+                splashScreenUI();
+            }
         }
     }
 
@@ -149,7 +269,7 @@ public class LedgerUI extends JFrame  {
             } else {
                 userAddFrame.setVisible(false);
                 ledger = new Ledger(originalNames);
-                mainMenuGUI();
+                splashScreenUI();
             }
         }
     }
@@ -181,6 +301,7 @@ public class LedgerUI extends JFrame  {
             }
 
             listModel.insertElementAt(username.getText(), index);
+            originalNames.add(username.getText());
             //If we just wanted to add to the end, we'd do this:
             //listModel.addElement(employeeName.getText());
             int size = listModel.getSize();
@@ -197,24 +318,18 @@ public class LedgerUI extends JFrame  {
             list.ensureIndexIsVisible(index);
         }
 
-        //This method tests for string equality. You could certainly
-        //get more sophisticated about the algorithm.  For example,
-        //you might want to ignore white space and capitalization.
         protected boolean alreadyInList(String name) {
             return listModel.contains(name);
         }
 
-        //Required by DocumentListener.
         public void insertUpdate(DocumentEvent e) {
             enableButton();
         }
 
-        //Required by DocumentListener.
         public void removeUpdate(DocumentEvent e) {
             handleEmptyTextField(e);
         }
 
-        //Required by DocumentListener.
         public void changedUpdate(DocumentEvent e) {
             if (!handleEmptyTextField(e)) {
                 enableButton();
@@ -239,5 +354,18 @@ public class LedgerUI extends JFrame  {
 
     public static void main(String[] args) {
         new LedgerUI();
+    }
+
+    private String ledgerSummary() {
+        ArrayList<User> users = ledger.getUsers();
+        String summary = "";
+        for (User u : users) {
+            summary += u.getName() + "\n";
+            ArrayList<Entry> entries = u.getEntries();
+            for (Entry e : entries) {
+                summary += "owes " + e.getName() + " " + e.getDebt() + "\n";
+            }
+        }
+        return summary;
     }
 }

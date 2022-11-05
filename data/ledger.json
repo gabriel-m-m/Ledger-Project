@@ -2,14 +2,14 @@
     {
         "entries": [
             {
-                "owed": 0,
+                "owed": 10323910,
                 "name": "p2",
-                "debt": 123123
+                "debt": 123246
             },
             {
                 "owed": 1230102,
                 "name": "p3",
-                "debt": 0
+                "debt": 42010
             }
         ],
         "name": "p1"
@@ -17,14 +17,14 @@
     {
         "entries": [
             {
-                "owed": 123123,
+                "owed": 123246,
                 "name": "p1",
-                "debt": 0
+                "debt": 10323910
             },
             {
-                "owed": 0,
+                "owed": 1203201,
                 "name": "p3",
-                "debt": 0
+                "debt": 21030
             }
         ],
         "name": "p2"
@@ -32,14 +32,14 @@
     {
         "entries": [
             {
-                "owed": 0,
+                "owed": 42010,
                 "name": "p1",
                 "debt": 1230102
             },
             {
-                "owed": 0,
+                "owed": 21030,
                 "name": "p2",
-                "debt": 0
+                "debt": 1203201
             }
         ],
         "name": "p3"

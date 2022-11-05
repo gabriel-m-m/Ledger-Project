@@ -273,7 +273,7 @@ public class LedgerApp {
 
     // MODIFIES : this
     // EFFECTS : gets originalNames when loading in a ledger from file
-    private void getNames() {
+    public void getNames() {
         ArrayList<String> namesFromFile = new ArrayList<>();
         for (User u : ledger.getUsers()) {
             namesFromFile.add(u.getName());
@@ -281,8 +281,12 @@ public class LedgerApp {
         originalNames = namesFromFile;
     }
 
-    private ArrayList<String> getOriginalNames() {
+    public ArrayList<String> getOriginalNames() {
         return this.originalNames;
+    }
+
+    public void setLedger(Ledger ledger) {
+        this.ledger = ledger;
     }
 
     public static void main(String[] args) {
