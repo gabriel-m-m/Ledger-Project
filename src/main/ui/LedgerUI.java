@@ -7,9 +7,6 @@ import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -17,12 +14,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 // Code based on ListDemo and ListDialog
-// https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
+// via: https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
 public class LedgerUI extends JFrame  {
     private JList list;
     private DefaultListModel listModel;
@@ -30,8 +25,10 @@ public class LedgerUI extends JFrame  {
     static JFrame userAddFrame;
     static JFrame mainFrame;
     private JTextPane ledgerSummaryPane;
+    private PaymentDialog paymentDialog;
 
     private static final String JSON_STORE_LOC = "./data/ledger.json";
+    private static final String TRANSITION_GIF_LOC = "./src/main/ui/splashscreen.gif";
     private static final String oweActionString = "Owe a user";
     private static final String payActionString = "Pay a user";
     private static final String balanceActionString = "Balance ledger";
@@ -47,10 +44,10 @@ public class LedgerUI extends JFrame  {
     private JButton doneButton;
     private JTextField username;
 
-    private ArrayList<String> originalNames;
+    protected ArrayList<String> originalNames;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
-    private Ledger ledger;
+    protected Ledger ledger;
 
     public LedgerUI() {
         // initialize stuff, exit on close things
@@ -193,7 +190,7 @@ public class LedgerUI extends JFrame  {
             }
         }
 
-        JButton splashButton = new JButton(new ImageIcon("./src/main/ui/splashscreen.gif"));
+        JButton splashButton = new JButton(new ImageIcon(TRANSITION_GIF_LOC));
         splashButton.setActionCommand("Press to continue");
         splashButton.addActionListener(new SplashListener());
         splashButton.setBackground(new Color(255,255,255));
@@ -217,13 +214,15 @@ public class LedgerUI extends JFrame  {
 
     class OweListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-
+            paymentDialog = new PaymentDialog("owe", ledger, originalNames);
+            ledgerSummaryPane.setText(ledgerSummary());
         }
     }
 
     class PayListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-
+            paymentDialog = new PaymentDialog("pay", ledger, originalNames);
+            ledgerSummaryPane.setText(ledgerSummary());
         }
     }
 
@@ -252,11 +251,14 @@ public class LedgerUI extends JFrame  {
         public void actionPerformed(ActionEvent e) {
             try {
                 ledger = jsonReader.read();
+                getNames();
             } catch (IOException ex) {
                 System.out.println("Unable to read from " + JSON_STORE_LOC);
             }
             if (startUpFrame.isVisible()) {
                 splashScreenUI();
+            } else {
+                ledgerSummaryPane.setText(ledgerSummary());
             }
         }
     }
@@ -352,10 +354,6 @@ public class LedgerUI extends JFrame  {
         }
     }
 
-    public static void main(String[] args) {
-        new LedgerUI();
-    }
-
     private String ledgerSummary() {
         ArrayList<User> users = ledger.getUsers();
         String summary = "";
@@ -367,5 +365,17 @@ public class LedgerUI extends JFrame  {
             }
         }
         return summary;
+    }
+
+    public void getNames() {
+        ArrayList<String> namesFromFile = new ArrayList<>();
+        for (User u : ledger.getUsers()) {
+            namesFromFile.add(u.getName());
+        }
+        originalNames = namesFromFile;
+    }
+
+    public static void main(String[] args) {
+        new LedgerUI();
     }
 }
