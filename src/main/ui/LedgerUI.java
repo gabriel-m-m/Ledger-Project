@@ -9,7 +9,9 @@ import persistence.JsonWriter;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.JTextComponent;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
@@ -25,6 +27,7 @@ public class LedgerUI extends JFrame  {
     static JFrame userAddFrame;
     static JFrame mainFrame;
     private JTextPane ledgerSummaryPane;
+    private JTextPane uiConsolePane;
     private PaymentDialog paymentDialog;
 
     private static final String JSON_STORE_LOC = "./data/ledger.json";
@@ -50,95 +53,24 @@ public class LedgerUI extends JFrame  {
     protected Ledger ledger;
 
     public LedgerUI() {
-        // initialize stuff, exit on close things
-        //use setVisible false to move to diff frames??
         originalNames = new ArrayList<>();
         jsonReader = new JsonReader(JSON_STORE_LOC);
         jsonWriter = new JsonWriter(JSON_STORE_LOC);
+        elementInit();
         startUpGUI();
     }
 
-    public void startUpGUI() {
-        startUpFrame = new JFrame("Ledger Startup");
-        startUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public void elementInit() {
         createButton = new JButton(createActionString);
         createButton.setActionCommand(createActionString);
         createButton.addActionListener(new CreateListener());
         loadButton = new JButton(loadActionString);
         loadButton.setActionCommand(loadActionString);
         loadButton.addActionListener(new LoadListener());
-        JPanel buttonPane = new JPanel();
-        JComponent newContentPane = buttonPane;
-        newContentPane.setOpaque(true); //content panes must be opaque
-        startUpFrame.setContentPane(newContentPane);
-        buttonPane.add(createButton);
-        buttonPane.add(loadButton);
-        startUpFrame.pack();
-        startUpFrame.setVisible(true);
-    }
-
-    public void getLedgerNamesUI() {
-        startUpFrame.setVisible(false);
-        userAddFrame = new JFrame("Add users to ledger");
-        userAddFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel userPane = new AddUserUI();
-        JComponent newContentPane = userPane;
-        newContentPane.setOpaque(true); //content panes must be opaque
-        userAddFrame.setContentPane(newContentPane);
-        userAddFrame.pack();
-        userAddFrame.setVisible(true);
-    }
-
-
-    public class AddUserUI extends JPanel {
-
-        public AddUserUI() {
-            super(new BorderLayout());
-
-            listModel = new DefaultListModel();
-            listModel.addElement("");
-
-            list = new JList(listModel);
-            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            list.setSelectedIndex(0);
-            list.setVisibleRowCount(5);
-            JScrollPane listScrollPane = new JScrollPane(list);
-
-            JButton addUser = new JButton("Add user");
-            addUser.setActionCommand("Add user");
-            AddUserListener addUserListener = new AddUserListener(addUser);
-            addUser.addActionListener(addUserListener);
-            addUser.setEnabled(false);
-
-            doneButton = new JButton("Done");
-            doneButton.setActionCommand("Done");
-            doneButton.addActionListener(new DoneListener());
-            doneButton.setEnabled(false);
-
-            username = new JTextField(10);
-            username.addActionListener(addUserListener);
-            username.getDocument().addDocumentListener(addUserListener);
-            String name = listModel.getElementAt(list.getSelectedIndex()).toString();
-
-            JPanel buttonPane = new JPanel();
-            buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
-            buttonPane.add(doneButton);
-            buttonPane.add(Box.createHorizontalStrut(5));
-            buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-            buttonPane.add(Box.createHorizontalStrut(5));
-            buttonPane.add(username);
-            buttonPane.add(addUser);
-            buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            add(listScrollPane, BorderLayout.CENTER);
-            add(buttonPane, BorderLayout.PAGE_END);
-            listModel.remove(0);
-        }
-    }
-
-    public void mainMenuGUI() {
-        startUpFrame.setVisible(false);
-        mainFrame = new JFrame("Main Menu");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        doneButton = new JButton("Done");
+        doneButton.setActionCommand("Done");
+        doneButton.addActionListener(new DoneListener());
+        doneButton.setEnabled(false);
         oweButton = new JButton(oweActionString);
         oweButton.setActionCommand(oweActionString);
         oweButton.addActionListener(new OweListener());
@@ -151,23 +83,98 @@ public class LedgerUI extends JFrame  {
         balanceButton = new JButton(balanceActionString);
         balanceButton.setActionCommand(balanceActionString);
         balanceButton.addActionListener(new BalanceListener());
+    }
+
+    public void startUpGUI() {
+        startUpFrame = new JFrame("Ledger Startup");
+        startUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel buttonPane = new JPanel();
+        buttonPane.setOpaque(true);
+        startUpFrame.setContentPane(buttonPane);
+        buttonPane.add(createButton);
+        buttonPane.add(loadButton);
+        startUpFrame.pack();
+        startUpFrame.setVisible(true);
+    }
+
+    public void getLedgerNamesUI() {
+        startUpFrame.setVisible(false);
+        userAddFrame = new JFrame("Add users to ledger");
+        userAddFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel userPane = new AddUserUI();
+        userPane.setOpaque(true);
+        userAddFrame.setContentPane(userPane);
+        userAddFrame.pack();
+        userAddFrame.setVisible(true);
+    }
+
+
+    public class AddUserUI extends JPanel {
+
+        public AddUserUI() {
+            super(new BorderLayout());
+
+            listModel = new DefaultListModel();
+            //listModel.addElement("");
+
+            list = new JList(listModel);
+            //list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            //list.setSelectedIndex(0);
+            //list.setVisibleRowCount(5);
+            JScrollPane listScrollPane = new JScrollPane(list);
+
+            JButton addUser = new JButton("Add user");
+            addUser.setActionCommand("Add user");
+            AddUserListener addUserListener = new AddUserListener(addUser);
+            addUser.addActionListener(addUserListener);
+            addUser.setEnabled(false);
+
+            username = new JTextField(10);
+            username.addActionListener(addUserListener);
+            username.getDocument().addDocumentListener(addUserListener);
+
+            JPanel buttonPane = new JPanel();
+            buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+            buttonPane.add(doneButton);
+            buttonPane.add(Box.createHorizontalStrut(5));
+            buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
+            buttonPane.add(Box.createHorizontalStrut(5));
+            buttonPane.add(username);
+            buttonPane.add(addUser);
+            buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            add(listScrollPane, BorderLayout.CENTER);
+            add(buttonPane, BorderLayout.PAGE_END);
+            //listModel.remove(0);
+        }
+    }
+
+    public void mainMenuGUI() {
+        startUpFrame.setVisible(false);
+        mainFrame = new JFrame("Main Menu");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel mainPane = new JPanel();
         JPanel topButtonPane = new JPanel();
         JPanel botButtonPane = new JPanel();
         ledgerSummaryPane = new JTextPane();
         ledgerSummaryPane.setText(ledgerSummary());
         ledgerSummaryPane.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
-        ledgerSummaryPane.enableInputMethods(false);
         ledgerSummaryPane.setEditable(false);
-        JComponent newContentPane = mainPane;
-        newContentPane.setOpaque(true); //content panes must be opaque
-        mainFrame.setContentPane(newContentPane);
+        uiConsolePane = new JTextPane();
+        uiConsolePane.setText("Ledger Initialized!");
+        uiConsolePane.setEditable(false);
+        StyledDocument doc = uiConsolePane.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        mainPane.setOpaque(true);
+        mainFrame.setContentPane(mainPane);
         botButtonPane.add(oweButton);
         botButtonPane.add(balanceButton);
         botButtonPane.add(payButton);
         topButtonPane.add(saveButton);
         topButtonPane.add(loadButton);
         mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
+        mainPane.add(uiConsolePane, BorderLayout.CENTER);
         mainPane.add(topButtonPane, BorderLayout.PAGE_START);
         mainPane.add(ledgerSummaryPane, BorderLayout.CENTER);
         mainPane.add(botButtonPane, BorderLayout.PAGE_END);
@@ -214,15 +221,17 @@ public class LedgerUI extends JFrame  {
 
     class OweListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            paymentDialog = new PaymentDialog("owe", ledger, originalNames);
+            paymentDialog = new PaymentDialog("Owe", ledger, originalNames);
             ledgerSummaryPane.setText(ledgerSummary());
+            uiConsolePane.setText("Ledger updated!");
         }
     }
 
     class PayListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            paymentDialog = new PaymentDialog("pay", ledger, originalNames);
+            paymentDialog = new PaymentDialog("Pay", ledger, originalNames);
             ledgerSummaryPane.setText(ledgerSummary());
+            uiConsolePane.setText("Ledger updated!");
         }
     }
 
@@ -230,6 +239,7 @@ public class LedgerUI extends JFrame  {
         public void actionPerformed(ActionEvent e) {
             ledger.balanceLedger();
             ledgerSummaryPane.setText(ledgerSummary());
+            uiConsolePane.setText("Ledger balanced!");
         }
     }
 
@@ -243,6 +253,7 @@ public class LedgerUI extends JFrame  {
             } catch (FileNotFoundException fnfe) {
                 System.out.println("Unable to write to file: " + JSON_STORE_LOC);
             }
+            uiConsolePane.setText("Ledger saved!");
         }
     }
 
@@ -259,6 +270,7 @@ public class LedgerUI extends JFrame  {
                 splashScreenUI();
             } else {
                 ledgerSummaryPane.setText(ledgerSummary());
+                uiConsolePane.setText("Ledger loaded!");
             }
         }
     }
@@ -295,27 +307,24 @@ public class LedgerUI extends JFrame  {
             }
 
 
-            int index = list.getSelectedIndex(); //get selected index
-            if (index == -1) { //no selection, so insert at beginning
+            int index = list.getSelectedIndex();
+            if (index == -1) {
                 index = 0;
-            } else {           //add after the selected item
+            } else {
                 index++;
             }
 
             listModel.insertElementAt(username.getText(), index);
             originalNames.add(username.getText());
-            //If we just wanted to add to the end, we'd do this:
-            //listModel.addElement(employeeName.getText());
+
             int size = listModel.getSize();
             if (size >= 2) {
                 doneButton.setEnabled(true);
             }
 
-            //Reset the text field.
             username.requestFocusInWindow();
             username.setText("");
 
-            //Select the new item and make it visible.
             list.setSelectedIndex(index);
             list.ensureIndexIsVisible(index);
         }

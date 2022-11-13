@@ -33,9 +33,7 @@ public class PaymentDialog {
 
     public void dialogUI() {
         firstUserChoice = new JComboBox<>(firstChoices);
-        firstUserChoice.setSize(20, 10);
         secondUserChoice = new JComboBox<>(firstChoices);
-        secondUserChoice.setSize(20, 10);
         paymentPane = new JPanel();
         paymentDialog = new JDialog();
         paymentDialog.setTitle(command + " a user");
@@ -44,9 +42,8 @@ public class PaymentDialog {
         finishButton.addActionListener(new FinishListener());
         amountField = new JTextField(12);
         actionDescription = new JTextPane();
-        actionDescription.setText(command.equals("owe") ? " owes " : " is paying ");
+        actionDescription.setText(command.equals("Owe") ? " owes " : " is paying ");
         actionDescription.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
-        actionDescription.enableInputMethods(false);
         actionDescription.setEditable(false);
         paymentDialog.setContentPane(paymentPane);
         paymentDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -55,6 +52,7 @@ public class PaymentDialog {
         paymentPane.add(secondUserChoice);
         paymentPane.add(amountField);
         paymentPane.add(finishButton);
+        paymentDialog.setBounds(50,80, 0, 0);
         paymentDialog.pack();
         paymentDialog.setVisible(true);
     }
@@ -72,7 +70,7 @@ public class PaymentDialog {
             String user2 = secondUserChoice.getSelectedItem().toString();
             int amount = Integer.parseInt(amountField.getText());
             if (!user1.equals(user2)) {
-                if (command.equals("owe")) {
+                if (command.equals("Owe")) {
                     ledger.increaseOwed(user1, user2, amount);
                     paymentDialog.setVisible(false);
                     paymentPane.setVisible(false);
