@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// Ledger GUI application
 // Code based on ListDemo and ListDialog
 // via: https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
 public class LedgerUI extends JFrame  {
@@ -26,6 +27,7 @@ public class LedgerUI extends JFrame  {
     static JFrame startUpFrame;
     static JFrame userAddFrame;
     static JFrame mainFrame;
+    static JFrame splashFrame;
     private JTextPane ledgerSummaryPane;
     private JTextPane uiConsolePane;
     private PaymentDialog paymentDialog;
@@ -52,15 +54,18 @@ public class LedgerUI extends JFrame  {
     private JsonReader jsonReader;
     protected Ledger ledger;
 
+    // EFFECTS : Constructs LedgerUI application
     public LedgerUI() {
         originalNames = new ArrayList<>();
         jsonReader = new JsonReader(JSON_STORE_LOC);
         jsonWriter = new JsonWriter(JSON_STORE_LOC);
-        elementInit();
+        buttonInit();
         startUpGUI();
     }
 
-    public void elementInit() {
+    // MODIFIES : this
+    // EFFECTS : Initializes buttons to be used in UI
+    public void buttonInit() {
         createButton = new JButton(createActionString);
         createButton.setActionCommand(createActionString);
         createButton.addActionListener(new CreateListener());
@@ -85,6 +90,8 @@ public class LedgerUI extends JFrame  {
         balanceButton.addActionListener(new BalanceListener());
     }
 
+    // MODIFIES : this
+    // EFFECTS : Runs the startup UI menu
     public void startUpGUI() {
         startUpFrame = new JFrame("Ledger Startup");
         startUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,7 +104,9 @@ public class LedgerUI extends JFrame  {
         startUpFrame.setVisible(true);
     }
 
-    public void getLedgerNamesUI() {
+    // MODIFIES : this
+    // EFFECTS : Runs the menu to create new Ledger
+    public void createLedgerUI() {
         startUpFrame.setVisible(false);
         userAddFrame = new JFrame("Add users to ledger");
         userAddFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -108,9 +117,10 @@ public class LedgerUI extends JFrame  {
         userAddFrame.setVisible(true);
     }
 
-
+    // Menu for ledger creation
     public class AddUserUI extends JPanel {
 
+        // EFFECTS : Constructor for Ledger creation UI
         public AddUserUI() {
             super(new BorderLayout());
 
@@ -148,20 +158,13 @@ public class LedgerUI extends JFrame  {
         }
     }
 
+    // MODIFIES : this
+    // EFFECTS : Runs the main menu UI
     public void mainMenuGUI() {
-        startUpFrame.setVisible(false);
-        mainFrame = new JFrame("Main Menu");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainMenuInit();
         JPanel mainPane = new JPanel();
         JPanel topButtonPane = new JPanel();
         JPanel botButtonPane = new JPanel();
-        ledgerSummaryPane = new JTextPane();
-        ledgerSummaryPane.setText(ledgerSummary());
-        ledgerSummaryPane.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
-        ledgerSummaryPane.setEditable(false);
-        uiConsolePane = new JTextPane();
-        uiConsolePane.setText("Ledger Initialized!");
-        uiConsolePane.setEditable(false);
         StyledDocument doc = uiConsolePane.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -181,22 +184,27 @@ public class LedgerUI extends JFrame  {
         mainPane.setBorder(BorderFactory.createEmptyBorder(3, 15, 3, 15));
         mainFrame.pack();
         mainFrame.setVisible(true);
-        mainPane.setVisible(true);
     }
 
+    public void mainMenuInit() {
+        startUpFrame.setVisible(false);
+        mainFrame = new JFrame("Main Menu");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ledgerSummaryPane = new JTextPane();
+        ledgerSummaryPane.setText(ledgerSummary());
+        ledgerSummaryPane.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
+        ledgerSummaryPane.setEditable(false);
+        uiConsolePane = new JTextPane();
+        uiConsolePane.setText("Ledger Initialized!");
+        uiConsolePane.setEditable(false);
+    }
+
+    // MODIFIES : this
+    // EFFECTS : Runs the splashscreen
     public void splashScreenUI() {
         startUpFrame.setVisible(false);
-        JFrame splashFrame = new JFrame("Ledger created successfully! \n Press to continue");
+        splashFrame = new JFrame("Ledger created successfully! \n Press to continue");
         splashFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        class SplashListener implements ActionListener {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                splashFrame.setVisible(false);
-                mainMenuGUI();
-            }
-        }
-
         JButton splashButton = new JButton(new ImageIcon(TRANSITION_GIF_LOC));
         splashButton.setActionCommand("Press to continue");
         splashButton.addActionListener(new SplashListener());
@@ -211,15 +219,30 @@ public class LedgerUI extends JFrame  {
         splashFrame.setVisible(true);
     }
 
-
-
-    class CreateListener implements ActionListener {
+    // Action listener for splashscreen
+    class SplashListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : Closes splash screen and opens main menu
         public void actionPerformed(ActionEvent e) {
-            getLedgerNamesUI();
+            splashFrame.setVisible(false);
+            mainMenuGUI();
         }
     }
 
+
+    // Action listener for the "Create new ledger" button
+    class CreateListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : Runs the createLedgerUI
+        public void actionPerformed(ActionEvent e) {
+            createLedgerUI();
+        }
+    }
+
+    // Action listener for the "owe a user" button
     class OweListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : Creates a new dialog with the appropriate action when button is pressed
         public void actionPerformed(ActionEvent e) {
             paymentDialog = new PaymentDialog("Owe", ledger, originalNames);
             ledgerSummaryPane.setText(ledgerSummary());
@@ -227,7 +250,10 @@ public class LedgerUI extends JFrame  {
         }
     }
 
+    // Action listener for the "pay a user" button
     class PayListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : Creates a new dialog with the appropriate action when button is pressed
         public void actionPerformed(ActionEvent e) {
             paymentDialog = new PaymentDialog("Pay", ledger, originalNames);
             ledgerSummaryPane.setText(ledgerSummary());
@@ -235,7 +261,10 @@ public class LedgerUI extends JFrame  {
         }
     }
 
+    // Action listener for the "balance ledger" button
     private class BalanceListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : Balances ledger when button is pressed, updates console text
         public void actionPerformed(ActionEvent e) {
             ledger.balanceLedger();
             ledgerSummaryPane.setText(ledgerSummary());
@@ -243,22 +272,27 @@ public class LedgerUI extends JFrame  {
         }
     }
 
+    // Action listener for the "Save ledger" button
     private class SaveListener implements ActionListener {
-        @Override
+        // MODIFIES : this
+        // EFFECTS : Saves ledger when button is pressed
         public void actionPerformed(ActionEvent e) {
             try {
                 jsonWriter.open();
                 jsonWriter.write(ledger);
                 jsonWriter.close();
+                uiConsolePane.setText("Ledger saved!");
             } catch (FileNotFoundException fnfe) {
                 System.out.println("Unable to write to file: " + JSON_STORE_LOC);
+                uiConsolePane.setText("Unable to save");
             }
-            uiConsolePane.setText("Ledger saved!");
         }
     }
 
-
+    // Action listener for the "Load ledger" button
     class LoadListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : Loads ledger, if called from startup menu, loads main menu
         public void actionPerformed(ActionEvent e) {
             try {
                 ledger = jsonReader.read();
@@ -275,7 +309,10 @@ public class LedgerUI extends JFrame  {
         }
     }
 
+    // Action listener for the "done" button for the createLedgerUI
     class DoneListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : Runs the splash screen if length of names > 1
         public void actionPerformed(ActionEvent e) {
             int size = listModel.getSize();
             if (size < 2) {
@@ -288,6 +325,7 @@ public class LedgerUI extends JFrame  {
         }
     }
 
+    // Listener for the "Add user button" in the createLedgerUI
     class AddUserListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
         private JButton button;
@@ -296,6 +334,8 @@ public class LedgerUI extends JFrame  {
             this.button = button;
         }
 
+        // MODIFIES : this
+        // EFFECTS : Adds input to originalNames if string is valid, and resets text field
         public void actionPerformed(ActionEvent e) {
             String name = username.getText();
 
@@ -329,30 +369,43 @@ public class LedgerUI extends JFrame  {
             list.ensureIndexIsVisible(index);
         }
 
+        // EFFECTS : Checks if string is already in the listmodel
         protected boolean alreadyInList(String name) {
             return listModel.contains(name);
         }
 
+        // MODIFIES : this
+        // EFFECTS : Enables button when there is an insert in the document
         public void insertUpdate(DocumentEvent e) {
             enableButton();
         }
 
+        // MODIFIES : this
+        // EFFECTS : Updates button when an removal in document occurs,
+        //           disabling the button if the text field is empty
         public void removeUpdate(DocumentEvent e) {
             handleEmptyTextField(e);
         }
 
+        // MODIFIES : this
+        // EFFECTS : Enables button if text field is not empty
         public void changedUpdate(DocumentEvent e) {
             if (!handleEmptyTextField(e)) {
                 enableButton();
             }
         }
 
+        // MODIFIES : this
+        // EFFECTS : Enables button
         private void enableButton() {
             if (!alreadyEnabled) {
                 button.setEnabled(true);
             }
         }
 
+        // MODIFIES : this
+        // EFFECTS : Disables button if text field is empty and returns true
+        //           returns false otherwise
         private boolean handleEmptyTextField(DocumentEvent e) {
             if (e.getDocument().getLength() <= 0) {
                 button.setEnabled(false);
@@ -363,6 +416,7 @@ public class LedgerUI extends JFrame  {
         }
     }
 
+    // EFFECTS : Returns a string that summarizes Ledger
     private String ledgerSummary() {
         ArrayList<User> users = ledger.getUsers();
         String summary = "";
@@ -376,6 +430,8 @@ public class LedgerUI extends JFrame  {
         return summary;
     }
 
+    // MODIFIES : this
+    // EFFECTS : Updates originalNames with names from ledger
     public void getNames() {
         ArrayList<String> namesFromFile = new ArrayList<>();
         for (User u : ledger.getUsers()) {

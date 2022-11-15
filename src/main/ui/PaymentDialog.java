@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+// Dialog for transaction in Ledger
 public class PaymentDialog {
     private String command;
     static JPanel paymentPane;
@@ -23,6 +24,7 @@ public class PaymentDialog {
     private JButton finishButton;
     private static final String finishActionString = "Finish";
 
+    // EFFECTS : Constructors a dialog for the command, and updates the Ledger
     public PaymentDialog(String command, Ledger ledger, ArrayList<String> ogNames) {
         this.command = command;
         this.originalNamesCopy = new ArrayList<>(ogNames);
@@ -31,6 +33,8 @@ public class PaymentDialog {
         dialogUI();
     }
 
+    // MODIFIES : this
+    // EFFECTS : Runs the dialog UI
     public void dialogUI() {
         firstUserChoice = new JComboBox<>(firstChoices);
         secondUserChoice = new JComboBox<>(firstChoices);
@@ -57,8 +61,11 @@ public class PaymentDialog {
         paymentDialog.setVisible(true);
     }
 
+    // Action listener for the "Finish" button
     private class FinishListener implements ActionListener {
-        @Override
+        // MODIFIES : this
+        // EFFECTS : If inputs are valid: two different name chosen, valid integer input
+        //           Updates ledger and closes dialog
         public void actionPerformed(ActionEvent e) {
             if (firstUserChoice.getSelectedItem() == null || secondUserChoice.getSelectedItem() == null) {
                 return;
@@ -83,6 +90,7 @@ public class PaymentDialog {
         }
     }
 
+    // EFFECTS : Returns true if integer input is valid
     public boolean isValidInteger(String text) {
         if (text == null || text.length() <= 0) {
             return false;
