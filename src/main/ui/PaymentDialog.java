@@ -24,10 +24,10 @@ public class PaymentDialog {
     private JButton finishButton;
     private static final String finishActionString = "Finish";
 
-    // EFFECTS : Constructors a dialog for the command, and updates the Ledger
-    public PaymentDialog(String command, Ledger ledger, ArrayList<String> ogNames) {
+    // EFFECTS : Constructors a dialog for the command, with ledger and originalNames
+    public PaymentDialog(String command, Ledger ledger, ArrayList<String> originalNames) {
         this.command = command;
-        this.originalNamesCopy = new ArrayList<>(ogNames);
+        this.originalNamesCopy = new ArrayList<>(originalNames);
         firstChoices = originalNamesCopy.toArray(new String[0]);
         this.ledger = ledger;
         dialogUI();
@@ -90,7 +90,7 @@ public class PaymentDialog {
         }
     }
 
-    // EFFECTS : Returns true if integer input is valid
+    // EFFECTS : Returns true if input is valid integer
     public boolean isValidInteger(String text) {
         if (text == null || text.length() <= 0) {
             return false;

@@ -57,13 +57,13 @@ class LedgerTest extends LedgerTestHelper {
         users.add(u1);
         users.add(u2);
         users.add(u3);
-
     }
 
 
     @Test
     public void testConstructor() {
         assertTrue(isEqualLedger(users, ledger));
+        assertEquals(names, ledger.getOriginalNames());
     }
 
     @Test

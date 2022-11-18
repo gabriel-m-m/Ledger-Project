@@ -30,15 +30,15 @@ record these amounts so that the information regarding what is owed is easily ac
 
 - You can generate the first required event relating adding Xs to a Y by
 first running the UI, then clicking on the "Create new ledger" button. 
-In the new window, you will able to type in strings to be used as usernames for ledger. 
+In the new window, you will be able to type in strings to be used as usernames for ledger. 
 This can be achieved by typing a name into the text field then pressing "Add user".
-- You can generate the first required event relating adding Xs to a Y by proceeding from the first step,
+- You can generate the second required event relating adding Xs to a Y by proceeding from the first step,
 and creating a ledger. Then, in the main menu, the ledger will be displayed in the middle. Using the "Balance",
-"Pay a user", or "Owe a user" buttons, you can make changes the Xs, which will by updated in the middle display.
+"Pay a user", or "Owe a user" buttons, you can make changes the Xs, which will be updated in the middle display.
 - You can locate my visual component by loading a ledger from the start menu or creating a 
 new ledger then pressing "Done" (when at least 2 users have been added). Both of these actions will bring you 
 to a splashscreen, which contains the visual component.
 - You can save the state of my application by pressing the "Save" button in the main menu, after having 
 created or loaded a ledger.
 - You can reload the state of my application by pressing the "Load ledger" button in the start-up 
-menu, or pressing "Load" in the main menu. 
+menu, or pressing "Load ledger" in the main menu. 

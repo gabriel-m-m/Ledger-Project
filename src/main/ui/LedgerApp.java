@@ -265,20 +265,10 @@ public class LedgerApp {
         try {
             ledger = jsonReader.read();
             System.out.println("Loaded ledger from " + JSON_STORE_LOC);
-            getNames();
+            originalNames = ledger.getOriginalNames();
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE_LOC);
         }
-    }
-
-    // MODIFIES : this
-    // EFFECTS : gets originalNames when loading in a ledger from file
-    public void getNames() {
-        ArrayList<String> namesFromFile = new ArrayList<>();
-        for (User u : ledger.getUsers()) {
-            namesFromFile.add(u.getName());
-        }
-        originalNames = namesFromFile;
     }
 
     public ArrayList<String> getOriginalNames() {
@@ -287,10 +277,6 @@ public class LedgerApp {
 
     public void setLedger(Ledger ledger) {
         this.ledger = ledger;
-    }
-
-    public static void main(String[] args) {
-        new LedgerApp();
     }
 }
 

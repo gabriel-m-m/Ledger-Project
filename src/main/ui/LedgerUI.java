@@ -33,7 +33,8 @@ public class LedgerUI extends JFrame  {
     private PaymentDialog paymentDialog;
 
     private static final String JSON_STORE_LOC = "./data/ledger.json";
-    private static final String TRANSITION_GIF_LOC = "./src/main/ui/splashscreen.gif";
+    private static final String TRANSITION_GIF_LOC = "./data/images/splashscreen.gif";
+    private static final String CURRENCY_DENOM = "cents";
     private static final String oweActionString = "Owe a user";
     private static final String payActionString = "Pay a user";
     private static final String balanceActionString = "Balance ledger";
@@ -60,7 +61,7 @@ public class LedgerUI extends JFrame  {
         jsonReader = new JsonReader(JSON_STORE_LOC);
         jsonWriter = new JsonWriter(JSON_STORE_LOC);
         buttonInit();
-        startUpGUI();
+        startUpUI();
     }
 
     // MODIFIES : this
@@ -92,7 +93,7 @@ public class LedgerUI extends JFrame  {
 
     // MODIFIES : this
     // EFFECTS : Runs the startup UI menu
-    public void startUpGUI() {
+    public void startUpUI() {
         startUpFrame = new JFrame("Ledger Startup");
         startUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel buttonPane = new JPanel();
@@ -160,15 +161,11 @@ public class LedgerUI extends JFrame  {
 
     // MODIFIES : this
     // EFFECTS : Runs the main menu UI
-    public void mainMenuGUI() {
+    public void mainMenuUI() {
         mainMenuInit();
         JPanel mainPane = new JPanel();
         JPanel topButtonPane = new JPanel();
         JPanel botButtonPane = new JPanel();
-        StyledDocument doc = uiConsolePane.getStyledDocument();
-        SimpleAttributeSet center = new SimpleAttributeSet();
-        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-        doc.setParagraphAttributes(0, doc.getLength(), center, false);
         mainPane.setOpaque(true);
         mainFrame.setContentPane(mainPane);
         botButtonPane.add(oweButton);
@@ -197,6 +194,10 @@ public class LedgerUI extends JFrame  {
         uiConsolePane = new JTextPane();
         uiConsolePane.setText("Ledger Initialized!");
         uiConsolePane.setEditable(false);
+        StyledDocument doc = uiConsolePane.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
     }
 
     // MODIFIES : this
@@ -225,7 +226,7 @@ public class LedgerUI extends JFrame  {
         // EFFECTS : Closes splash screen and opens main menu
         public void actionPerformed(ActionEvent e) {
             splashFrame.setVisible(false);
-            mainMenuGUI();
+            mainMenuUI();
         }
     }
 
@@ -296,7 +297,7 @@ public class LedgerUI extends JFrame  {
         public void actionPerformed(ActionEvent e) {
             try {
                 ledger = jsonReader.read();
-                getNames();
+                originalNames = ledger.getOriginalNames();
             } catch (IOException ex) {
                 System.out.println("Unable to read from " + JSON_STORE_LOC);
             }
@@ -309,7 +310,7 @@ public class LedgerUI extends JFrame  {
         }
     }
 
-    // Action listener for the "done" button for the createLedgerUI
+    // Action listener for the "done" button in createLedgerUI
     class DoneListener implements ActionListener {
         // MODIFIES : this
         // EFFECTS : Runs the splash screen if length of names > 1
@@ -325,7 +326,7 @@ public class LedgerUI extends JFrame  {
         }
     }
 
-    // Listener for the "Add user button" in the createLedgerUI
+    // Listener for the "Add user button" in createLedgerUI
     class AddUserListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
         private JButton button;
@@ -381,7 +382,7 @@ public class LedgerUI extends JFrame  {
         }
 
         // MODIFIES : this
-        // EFFECTS : Updates button when an removal in document occurs,
+        // EFFECTS : Updates button when a removal in document occurs,
         //           disabling the button if the text field is empty
         public void removeUpdate(DocumentEvent e) {
             handleEmptyTextField(e);
@@ -424,23 +425,9 @@ public class LedgerUI extends JFrame  {
             summary += u.getName() + "\n";
             ArrayList<Entry> entries = u.getEntries();
             for (Entry e : entries) {
-                summary += "owes " + e.getName() + " " + e.getDebt() + "\n";
+                summary += "   owes " + e.getName() + ": " + e.getDebt() + " " + CURRENCY_DENOM + "\n";
             }
         }
         return summary;
-    }
-
-    // MODIFIES : this
-    // EFFECTS : Updates originalNames with names from ledger
-    public void getNames() {
-        ArrayList<String> namesFromFile = new ArrayList<>();
-        for (User u : ledger.getUsers()) {
-            namesFromFile.add(u.getName());
-        }
-        originalNames = namesFromFile;
-    }
-
-    public static void main(String[] args) {
-        new LedgerUI();
     }
 }

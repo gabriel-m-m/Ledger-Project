@@ -100,4 +100,12 @@ public class Ledger {
     public void setUsers(ArrayList<User> users) {
         this.users = users;
     }
+
+    public ArrayList<String> getOriginalNames() {
+        ArrayList<String> ogNames = new ArrayList<>();
+        for (User u: this.users) {
+            ogNames.add(u.getName());
+        }
+        return ogNames;
+    }
 }
