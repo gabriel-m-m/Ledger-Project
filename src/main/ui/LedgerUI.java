@@ -62,7 +62,7 @@ public class LedgerUI {
     private JsonReader jsonReader;
     private Ledger ledger;
 
-    // EFFECTS : Constructs LedgerUI application
+    // EFFECTS : Runs Ledger UI application
     public LedgerUI() {
         originalNames = new ArrayList<>();
         jsonReader = new JsonReader(JSON_STORE_LOC);
@@ -185,6 +185,8 @@ public class LedgerUI {
         mainFrame.setVisible(true);
     }
 
+    // MODIFIES : this
+    // EFFECTS : initializes elements in main menu
     public void mainMenuInit() {
         startUpFrame.setVisible(false);
         mainFrame = new JFrame("Main Menu");
