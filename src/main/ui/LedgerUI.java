@@ -126,9 +126,8 @@ public class LedgerUI {
         userAddFrame.setVisible(true);
     }
 
-    // Menu for ledger creation
+    // Panel for ledger creation menu
     public class AddUserUI extends JPanel {
-
         // EFFECTS : Constructor for Ledger creation UI
         public AddUserUI() {
             super(new BorderLayout());
