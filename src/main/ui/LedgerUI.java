@@ -21,7 +21,7 @@ import java.util.ArrayList;
 // Ledger GUI application
 // Code based on ListDemo and ListDialog
 // via: https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
-public class LedgerUI extends JFrame  {
+public class LedgerUI {
     private JList list;
     private DefaultListModel listModel;
     static JFrame startUpFrame;
@@ -50,10 +50,10 @@ public class LedgerUI extends JFrame  {
     private JButton doneButton;
     private JTextField username;
 
-    protected ArrayList<String> originalNames;
+    private ArrayList<String> originalNames;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
-    protected Ledger ledger;
+    private Ledger ledger;
 
     // EFFECTS : Constructs LedgerUI application
     public LedgerUI() {
@@ -202,6 +202,7 @@ public class LedgerUI extends JFrame  {
 
     // MODIFIES : this
     // EFFECTS : Runs the splashscreen
+    // gif via : https://media.tenor.com/jdwSuJtlxXkAAAAC/hurricane-irma.gif
     public void splashScreenUI() {
         startUpFrame.setVisible(false);
         splashFrame = new JFrame("Ledger created successfully! \n Press to continue");
