@@ -34,9 +34,9 @@ In the new window, you will be able to type in strings to be used as usernames f
 This can be achieved by typing a name into the text field then pressing "Add user".
 - You can generate the second required event relating adding Xs to a Y by proceeding from the first step,
 and creating a ledger. Then, in the main menu, the ledger will be displayed in the middle. Using the "Balance" button,
-you can modify all entries in relation to each other (see example in 5th user story). With the "Pay a user" 
-and "Owe a user" buttons, you can make individual changes the Xs. 
-Any of these changes which will be updated in the middle display.
+you can modify all entries in relation to each other (see example in 5th user story). Going through all users and
+their entries and updating them accordingly. 
+This change which will be updated in the middle display.
 - You can locate my visual component by loading a ledger from the start menu or by creating a 
 new ledger then pressing "Done" (when at least 2 users have been added). Both of these actions will bring you 
 to a splashscreen, which contains the visual component.

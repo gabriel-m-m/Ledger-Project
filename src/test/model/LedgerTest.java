@@ -230,4 +230,24 @@ class LedgerTest extends LedgerTestHelper {
     public void testFindUserNull() {
         assertEquals(null, ledger.findUser("User 0"));
     }
+
+    @Test
+    public void testRemoveUser() {
+        ArrayList<User> expected = users;
+        expected.remove(u2);
+        u1Entries.remove(0);
+        u3Entries.remove(1);
+        ledger.removeUser("User 2");
+        assertTrue(isEqualLedger(expected, ledger));
+    }
+
+    @Test
+    public void testRemoveUserOther() {
+        ArrayList<User> expected = users;
+        expected.remove(u1);
+        u2Entries.remove(0);
+        u3Entries.remove(0);
+        ledger.removeUser("User 1");
+        assertTrue(isEqualLedger(expected, ledger));
+    }
 }

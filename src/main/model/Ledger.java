@@ -108,4 +108,21 @@ public class Ledger {
         }
         return ogNames;
     }
+
+    // MODIFIES : this
+    // EFFECTS : removes user with string name, and its corresponding
+    //           entries in all other users
+    public void removeUser(String name) {
+        for (User u : this.users) {
+            for (Entry e : u.getEntries()) {
+                if (e.getName().equals(name)) {
+                    ArrayList<Entry> entries = u.getEntries();
+                    entries.remove(e);
+                    u.setEntries(entries);
+                    break;
+                }
+            }
+        }
+        this.users.remove(findUser(name));
+    }
 }

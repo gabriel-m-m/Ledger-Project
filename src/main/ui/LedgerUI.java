@@ -28,13 +28,19 @@ public class LedgerUI {
     static JFrame userAddFrame;
     static JFrame mainFrame;
     static JFrame splashFrame;
-    private JTextPane ledgerSummaryPane;
+    private JTextPane ledgerSummaryText;
     private JTextPane uiConsolePane;
+    private JScrollPane ledgerSummaryPane;
+
     private PaymentDialog paymentDialog;
+
+    private JDialog removeUserDialog;
+    private JComboBox<String> removeUserChoices;
 
     private static final String JSON_STORE_LOC = "./data/ledger.json";
     private static final String TRANSITION_GIF_LOC = "./data/images/splashscreen.gif";
     private static final String CURRENCY_DENOM = "cents";
+
     private static final String oweActionString = "Owe a user";
     private static final String payActionString = "Pay a user";
     private static final String balanceActionString = "Balance ledger";
@@ -48,6 +54,7 @@ public class LedgerUI {
     private JButton saveButton;
     private JButton createButton;
     private JButton doneButton;
+    private JButton removeButton;
     private JTextField username;
 
     private ArrayList<String> originalNames;
@@ -74,7 +81,6 @@ public class LedgerUI {
         loadButton.setActionCommand(loadActionString);
         loadButton.addActionListener(new LoadListener());
         doneButton = new JButton("Done");
-        doneButton.setActionCommand("Done");
         doneButton.addActionListener(new DoneListener());
         doneButton.setEnabled(false);
         oweButton = new JButton(oweActionString);
@@ -89,6 +95,8 @@ public class LedgerUI {
         balanceButton = new JButton(balanceActionString);
         balanceButton.setActionCommand(balanceActionString);
         balanceButton.addActionListener(new BalanceListener());
+        removeButton = new JButton("Remove user");
+        removeButton.addActionListener(new RemoveUserListener());
     }
 
     // MODIFIES : this
@@ -124,16 +132,9 @@ public class LedgerUI {
         // EFFECTS : Constructor for Ledger creation UI
         public AddUserUI() {
             super(new BorderLayout());
-
             listModel = new DefaultListModel();
-            //listModel.addElement("");
-
             list = new JList(listModel);
-            //list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            //list.setSelectedIndex(0);
-            //list.setVisibleRowCount(5);
             JScrollPane listScrollPane = new JScrollPane(list);
-
             JButton addUser = new JButton("Add user");
             addUser.setActionCommand("Add user");
             AddUserListener addUserListener = new AddUserListener(addUser);
@@ -155,7 +156,6 @@ public class LedgerUI {
             buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             add(listScrollPane, BorderLayout.CENTER);
             add(buttonPane, BorderLayout.PAGE_END);
-            //listModel.remove(0);
         }
     }
 
@@ -171,8 +171,11 @@ public class LedgerUI {
         botButtonPane.add(oweButton);
         botButtonPane.add(balanceButton);
         botButtonPane.add(payButton);
+        botButtonPane.setMaximumSize(new Dimension(500,200));
         topButtonPane.add(saveButton);
         topButtonPane.add(loadButton);
+        topButtonPane.add(removeButton);
+        topButtonPane.setMaximumSize(new Dimension(500,200));
         mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
         mainPane.add(uiConsolePane, BorderLayout.CENTER);
         mainPane.add(topButtonPane, BorderLayout.PAGE_START);
@@ -187,13 +190,15 @@ public class LedgerUI {
         startUpFrame.setVisible(false);
         mainFrame = new JFrame("Main Menu");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ledgerSummaryPane = new JTextPane();
-        ledgerSummaryPane.setText(ledgerSummary());
-        ledgerSummaryPane.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
-        ledgerSummaryPane.setEditable(false);
+        ledgerSummaryText = new JTextPane();
+        ledgerSummaryText.setText(ledgerSummary());
+        ledgerSummaryText.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
+        ledgerSummaryText.setEditable(false);
+        ledgerSummaryPane = new JScrollPane(ledgerSummaryText);
         uiConsolePane = new JTextPane();
         uiConsolePane.setText("Ledger Initialized!");
         uiConsolePane.setEditable(false);
+        uiConsolePane.setMaximumSize(new Dimension(400,50));
         StyledDocument doc = uiConsolePane.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -247,7 +252,7 @@ public class LedgerUI {
         // EFFECTS : Creates a new dialog with the appropriate action when button is pressed
         public void actionPerformed(ActionEvent e) {
             paymentDialog = new PaymentDialog("Owe", ledger, originalNames);
-            ledgerSummaryPane.setText(ledgerSummary());
+            ledgerSummaryText.setText(ledgerSummary());
             uiConsolePane.setText("Ledger updated!");
         }
     }
@@ -258,7 +263,7 @@ public class LedgerUI {
         // EFFECTS : Creates a new dialog with the appropriate action when button is pressed
         public void actionPerformed(ActionEvent e) {
             paymentDialog = new PaymentDialog("Pay", ledger, originalNames);
-            ledgerSummaryPane.setText(ledgerSummary());
+            ledgerSummaryText.setText(ledgerSummary());
             uiConsolePane.setText("Ledger updated!");
         }
     }
@@ -269,7 +274,7 @@ public class LedgerUI {
         // EFFECTS : Balances ledger when button is pressed, updates console text
         public void actionPerformed(ActionEvent e) {
             ledger.balanceLedger();
-            ledgerSummaryPane.setText(ledgerSummary());
+            ledgerSummaryText.setText(ledgerSummary());
             uiConsolePane.setText("Ledger balanced!");
         }
     }
@@ -305,7 +310,7 @@ public class LedgerUI {
             if (startUpFrame.isVisible()) {
                 splashScreenUI();
             } else {
-                ledgerSummaryPane.setText(ledgerSummary());
+                ledgerSummaryText.setText(ledgerSummary());
                 uiConsolePane.setText("Ledger loaded!");
             }
         }
@@ -407,7 +412,7 @@ public class LedgerUI {
 
         // MODIFIES : this
         // EFFECTS : Disables button if text field is empty and returns true
-        //           returns false otherwise
+        //           otherwise returns false
         private boolean handleEmptyTextField(DocumentEvent e) {
             if (e.getDocument().getLength() <= 0) {
                 button.setEnabled(false);
@@ -430,5 +435,52 @@ public class LedgerUI {
             }
         }
         return summary;
+    }
+
+    // Action listener for remove user button in mainMenuUI
+    private class RemoveUserListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : if there are still users to be removed, runs removeUserUI
+        //           otherwise updates uiConsole
+        public void actionPerformed(ActionEvent e) {
+            if (originalNames.size() > 2) {
+                removeUserUI();
+            } else {
+                uiConsolePane.setText("Ledger needs at least two users!");
+            }
+        }
+    }
+
+    // MODIFIES : this
+    // EFFECTS : Creates dialog for removing users
+    public void removeUserUI() {
+        removeUserDialog = new JDialog();
+        removeUserDialog.setModal(true);
+        removeUserDialog.setTitle("Remove a user");
+        removeUserDialog.setBounds(50,80, 0, 0);
+        JPanel removePane = new JPanel();
+        removeUserChoices = new JComboBox<>(originalNames.toArray(new String[0]));
+        JButton removeUser = new JButton("Remove");
+        removeUser.addActionListener(new RemoveListener());
+        removePane.add(removeUserChoices);
+        removePane.add(removeUser);
+        removeUserDialog.setContentPane(removePane);
+        removeUserDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        removeUserDialog.pack();
+        removeUserDialog.setVisible(true);
+    }
+
+    // Action listener for remove button in removeUserUI
+    private class RemoveListener implements ActionListener {
+        // MODIFIES : this
+        // EFFECTS : removes chosen user from ledger and closes dialog
+        public void actionPerformed(ActionEvent e) {
+            String name = removeUserChoices.getSelectedItem().toString();
+            originalNames.remove(name);
+            ledger.removeUser(name);
+            ledgerSummaryText.setText(ledgerSummary());
+            uiConsolePane.setText("User removed!");
+            removeUserDialog.setVisible(false);
+        }
     }
 }
