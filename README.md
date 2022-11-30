@@ -43,3 +43,26 @@ to a splashscreen, which contains the visual component.
 created or loaded a ledger.
 - You can reload the state of my application by pressing the "Load ledger" button in the start-up 
 menu, or pressing "Load ledger" in the main menu. 
+
+### Phase 4 : Task 2
+Wed Nov 23 08:39:52 PST 2022  
+Users: [User 1, User 2, User 3, User 4] added to ledger.
+
+Wed Nov 23 08:39:57 PST 2022  
+User: User 3 removed.
+
+Wed Nov 23 08:40:13 PST 2022  
+Amount owed to User 2 by User 1 increased by 13202.
+
+Wed Nov 23 08:40:24 PST 2022  
+Amount owed to User 4 by User 1 increased by 2229138.
+
+Wed Nov 23 08:40:34 PST 2022  
+Amount owed to User 1 by User 2 increased by 213090.
+
+Wed Nov 23 08:40:41 PST 2022  
+User 1 payed User 4 12313.
+
+Wed Nov 23 08:40:43 PST 2022  
+Ledger balanced.
+

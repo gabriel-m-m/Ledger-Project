@@ -17,6 +17,7 @@ public class Ledger {
             User user = new User(s, names);
             users.add(user);
         }
+        EventLog.getInstance().logEvent(new Event("Users: " + names + " added to ledger."));
     }
 
     // REQUIRES : 0 < amount <= amount owed by name to owed
@@ -34,7 +35,7 @@ public class Ledger {
                 user.findEntry(name).subtractOwed(amount);
             }
         }
-
+        EventLog.getInstance().logEvent(new Event(name + " payed " + owed + " " + amount + "."));
     }
 
     // REQUIRES : amount > 0
@@ -51,6 +52,8 @@ public class Ledger {
                 user.findEntry(name).addOwed(amount);
             }
         }
+        EventLog.getInstance().logEvent(new Event("Amount owed to " + owed + " by " + name
+                + " increased by " + amount + "."));
     }
 
     // REQUIRES : string contained in original list of names
@@ -75,6 +78,7 @@ public class Ledger {
                 e.balanceVal();
             }
         }
+        EventLog.getInstance().logEvent(new Event("Ledger balanced."));
     }
 
     // EFFECTS : returns this as a JSON object
@@ -124,5 +128,6 @@ public class Ledger {
             }
         }
         this.users.remove(findUser(name));
+        EventLog.getInstance().logEvent(new Event("User: " + name + " removed."));
     }
 }

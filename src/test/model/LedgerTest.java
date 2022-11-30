@@ -62,6 +62,7 @@ class LedgerTest extends LedgerTestHelper {
 
     @Test
     public void testConstructor() {
+        ledger = new Ledger(names);
         assertTrue(isEqualLedger(users, ledger));
         assertEquals(names, ledger.getOriginalNames());
     }
@@ -92,11 +93,21 @@ class LedgerTest extends LedgerTestHelper {
         U2toU3.setOwed(90);
         U3toU2.setDebt(90);
         assertTrue(isEqualLedger(users, ledger));
+        ArrayList<Event> events = new ArrayList<>();
+        for (Event e: EventLog.getInstance()) {
+            events.add(e);
+        }
+        assertEquals("Amount owed to User 2 by User 1 increased by 30.",
+                events.get(events.size() - 2).getDescription());
+        assertEquals("Amount owed to User 2 by User 3 increased by 90.",
+                events.get(events.size() - 1).getDescription());
+
     }
 
     @Test
     public void testPayDebts() {
         // This finds the entry between user 1 and user 2 and sets the debt
+        EventLog.getInstance().clear();
         ledger.getUsers().get(0).getEntries().get(0).setDebt(30);
         ledger.getUsers().get(1).getEntries().get(0).setOwed(30);
         ledger.payDebts("User 1", "User 2", 20);
@@ -140,6 +151,12 @@ class LedgerTest extends LedgerTestHelper {
         U1toU3.setOwed(120);
         U3toU1.setDebt(120);
         assertTrue(isEqualLedger(users, ledger));
+        ArrayList<Event> events = new ArrayList<>();
+        for (Event e: EventLog.getInstance()) {
+            events.add(e);
+        }
+        assertEquals("User 1 payed User 2 230.", events.get(events.size() - 2).getDescription());
+        assertEquals("User 3 payed User 1 130.", events.get(events.size() - 1).getDescription());
     }
 
     @Test
@@ -182,6 +199,11 @@ class LedgerTest extends LedgerTestHelper {
         U3toU2.setOwed(0);
         U3toU2.setDebt(0);
         assertTrue(isEqualLedger(users, ledger));
+        ArrayList<Event> events = new ArrayList<>();
+        for (Event e: EventLog.getInstance()) {
+            events.add(e);
+        }
+        assertEquals("Ledger balanced.", events.get(events.size() - 1).getDescription());
     }
 
     @Test
@@ -204,6 +226,11 @@ class LedgerTest extends LedgerTestHelper {
         U3toU2.setOwed(200);
         U3toU2.setDebt(0);
         assertTrue(isEqualLedger(users, ledger));
+        ArrayList<Event> events = new ArrayList<>();
+        for (Event e: EventLog.getInstance()) {
+            events.add(e);
+        }
+        assertEquals("Ledger balanced.", events.get(events.size() - 1).getDescription());
     }
 
     @Test
@@ -228,7 +255,7 @@ class LedgerTest extends LedgerTestHelper {
 
     @Test
     public void testFindUserNull() {
-        assertEquals(null, ledger.findUser("User 0"));
+        assertNull(ledger.findUser("User 0"));
     }
 
     @Test
@@ -239,6 +266,11 @@ class LedgerTest extends LedgerTestHelper {
         u3Entries.remove(1);
         ledger.removeUser("User 2");
         assertTrue(isEqualLedger(expected, ledger));
+        ArrayList<Event> events = new ArrayList<>();
+        for (Event e: EventLog.getInstance()) {
+            events.add(e);
+        }
+        assertEquals("User: User 2 removed.", events.get(events.size() - 1).getDescription());
     }
 
     @Test
@@ -249,5 +281,10 @@ class LedgerTest extends LedgerTestHelper {
         u3Entries.remove(0);
         ledger.removeUser("User 1");
         assertTrue(isEqualLedger(expected, ledger));
+        ArrayList<Event> events = new ArrayList<>();
+        for (Event e: EventLog.getInstance()) {
+            events.add(e);
+        }
+        assertEquals("User: User 1 removed.", events.get(events.size() - 1).getDescription());
     }
 }

@@ -2,14 +2,14 @@
     {
         "entries": [
             {
-                "owed": 0,
+                "owed": 8932893,
                 "name": "User 2",
-                "debt": 3478323
+                "debt": 234567
             },
             {
-                "owed": 3399313,
+                "owed": 56789234,
                 "name": "User 3",
-                "debt": 1231312
+                "debt": 0
             }
         ],
         "name": "User 1"
@@ -17,14 +17,14 @@
     {
         "entries": [
             {
-                "owed": 3478323,
+                "owed": 234567,
                 "name": "User 1",
-                "debt": 0
+                "debt": 8932893
             },
             {
-                "owed": 2389981,
+                "owed": 0,
                 "name": "User 3",
-                "debt": 73838
+                "debt": 23984
             }
         ],
         "name": "User 2"
@@ -32,14 +32,14 @@
     {
         "entries": [
             {
-                "owed": 1231312,
+                "owed": 0,
                 "name": "User 1",
-                "debt": 3399313
+                "debt": 56789234
             },
             {
-                "owed": 73838,
+                "owed": 23984,
                 "name": "User 2",
-                "debt": 2389981
+                "debt": 0
             }
         ],
         "name": "User 3"
