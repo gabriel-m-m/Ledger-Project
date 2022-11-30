@@ -1,6 +1,5 @@
 package model;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 // Represents an entry for a user with owed and debt for other user with name
