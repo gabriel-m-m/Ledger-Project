@@ -66,3 +66,15 @@ User 1 payed User 4 12313.
 Wed Nov 23 08:40:43 PST 2022  
 Ledger balanced.
 
+
+### Phase 4: Task 3
+- A small change I would like to have made is to make ledger have a field for original names which would be also saved in JSON,
+as this was originally the cause of a lot of duplicate code
+- I would also make changes to my UI, especially the AddUserUI menu, this was needlessly created as its own class,
+given more time I would have made simply made it into a method similar to the other menu elements in LedgerUI.
+- I would change PaymentDialog to also be another method in LedgerUI, this would help reduce coupling 
+(but would also reduce cohesion).
+- As well as in the LedgerUI class, I would have like to refactor the class as a whole, so that
+it would require significantly fewer fields.
+
+
