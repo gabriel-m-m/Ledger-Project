@@ -71,10 +71,10 @@ Ledger balanced.
 - A small change I would like to have made is to make Ledger have a field for original names which would be also saved in JSON,
 as this was originally the cause of a lot of duplicate code
 - I would also have made changes to my UI, especially the AddUserUI menu, this was needlessly created as its own class
-within LedgerUI. Given more time I would have simply made it into a method similar to the other menu elements in LedgerUI.
+within LedgerUI. Given more time I would have simply made it into a method, similar to the other menu elements in LedgerUI.
 - I would have changed PaymentDialog to also be another method in LedgerUI, this would help reduce coupling 
 (but would also reduce cohesion).
-- As well as in the LedgerUI class, I would have refactored the class as a whole, so that
-it would require significantly fewer fields.
+- As well as in the LedgerUI class, I would have refactored the class as a whole, keeping UI elements within
+the scope of individual methods as much as possible so that the class would require significantly fewer fields.
 
 
