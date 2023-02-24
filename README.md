@@ -1,4 +1,4 @@
-# CPSC210 Personal Project
+# Personal Project
 
 ## IOU (_I owe you_)
 
@@ -26,48 +26,21 @@ record these amounts so that the information regarding what is owed is easily ac
 - As a user, I want to be able to save my ledger to file
 - As a user, I want to be able to load my ledger from file
 
-# Instructions for Grader
+# Instructions
 
-- You can generate the first required event relating adding Xs to a Y by
+- You can generate a ledger by
 first running the UI, then clicking on the "Create new ledger" button. 
 In the new window, you will be able to type in strings to be used as usernames for users to be included in the ledger. 
 This can be achieved by typing a name into the text field then pressing "Add user".
-- You can generate the second required event relating adding Xs to a Y by proceeding from the first step,
-and creating a ledger. Then, in the main menu, the ledger will be displayed in the middle. Using the "Remove user"
+- Then, in the main menu, the ledger will be displayed in the middle. Using the "Remove user"
 button you can remove any of the users and their corresponding entries from the ledger. 
 Any changes which will be updated in the middle display.
-- You can locate my visual component by loading a ledger from the start menu or by creating a 
-new ledger then pressing "Done" (when at least 2 users have been added). Both of these actions will bring you 
-to a splashscreen, which contains the visual component.
-- You can save the state of my application by pressing the "Save" button in the main menu, after having 
+- You can save the state of the application by pressing the "Save" button in the main menu, after having 
 created or loaded a ledger.
-- You can reload the state of my application by pressing the "Load ledger" button in the start-up 
+- You can reload the state of the application by pressing the "Load ledger" button in the start-up 
 menu, or pressing "Load ledger" in the main menu. 
 
-### Phase 4 : Task 2
-Wed Nov 23 08:39:52 PST 2022  
-Users: [User 1, User 2, User 3, User 4] added to ledger.
-
-Wed Nov 23 08:39:57 PST 2022  
-User: User 3 removed.
-
-Wed Nov 23 08:40:13 PST 2022  
-Amount owed to User 2 by User 1 increased by 13202.
-
-Wed Nov 23 08:40:24 PST 2022  
-Amount owed to User 4 by User 1 increased by 2229138.
-
-Wed Nov 23 08:40:34 PST 2022  
-Amount owed to User 1 by User 2 increased by 213090.
-
-Wed Nov 23 08:40:41 PST 2022  
-User 1 payed User 4 12313.
-
-Wed Nov 23 08:40:43 PST 2022  
-Ledger balanced.
-
-
-### Phase 4: Task 3
+### Reflection
 - A small change I would like to have made is to make Ledger have a field for original names which would be also saved in JSON,
 as this was originally the cause of a lot of duplicate code
 - I would also have made changes to my UI, especially the AddUserUI menu, this was needlessly created as its own class

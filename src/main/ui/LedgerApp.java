@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 // Ledger application
-// Code for loading/saving based off of JsonSerializationDemo example
 public class LedgerApp {
     private static final String JSON_STORE_LOC = "./data/ledger.json";
     private JsonWriter jsonWriter;

@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-
+// Provided files
 public class Event {
     private static final int HASH_CONSTANT = 13;
     private Date dateLogged;
